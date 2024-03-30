@@ -17,10 +17,19 @@ const row = (bill) => {
       </td>
     </tr>
     `)
-  }
+}
 
 const rows = (data) => {
-  return (data && data.length) ? data.map(bill => row(bill)).join("") : ""
+  // Check if data is defined before sorting
+  if (data) {
+    // Sort the data if it is defined
+    data = data.sort((a, b) => ((a.date < b.date) ? 1 : -1));
+    console.log(data);
+    return (data && data.length) ? data.map(bill => row(bill)).join("") : "";
+  } else {
+    // Return an empty string if data is undefined
+    return "";
+  }
 }
 
 export default ({ data: bills, loading, error }) => {
