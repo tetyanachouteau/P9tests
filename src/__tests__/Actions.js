@@ -1,7 +1,6 @@
-/**
- * @jest-environment jsdom
- */
+import jsdom from "jest-environment-jsdom";
 
+import React from "react";
 import { screen } from "@testing-library/dom"
 import Actions from "../views/Actions.js"
 import '@testing-library/jest-dom/extend-expect'

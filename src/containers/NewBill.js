@@ -1,3 +1,7 @@
+import jsdom from "jest-environment-jsdom";
+
+import React from "react";
+
 import { ROUTES_PATH } from '../constants/routes.js'
 import Logout from "./Logout.js"
 

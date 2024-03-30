@@ -1,3 +1,6 @@
+import jsdom from "jest-environment-jsdom";
+
+import React from "react";
 import store from "./Store.js"
 import Login, { PREVIOUS_LOCATION } from "../containers/Login.js"
 import Bills  from "../containers/Bills.js"

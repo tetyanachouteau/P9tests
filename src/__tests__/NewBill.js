@@ -1,6 +1,6 @@
-/**
- * @jest-environment jsdom
- */
+import jsdom from "jest-environment-jsdom";
+
+import React from "react";
 
 import { screen } from "@testing-library/dom"
 import NewBillUI from "../views/NewBillUI.js"

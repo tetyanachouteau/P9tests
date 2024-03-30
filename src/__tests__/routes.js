@@ -1,6 +1,5 @@
-/**
- * @jest-environment jsdom
- */
+import React from 'react';
+import jsdom from "jest-environment-jsdom";
 
 import { ROUTES, ROUTES_PATH } from "../constants/routes"
 import { screen } from "@testing-library/dom"
@@ -24,18 +23,19 @@ describe('Given I am connected and I am on some page of the app', () => {
     })
   })
   describe('When I navigate to Bills page', () => {
-    test(('Then, it should render Bills page'), () => {
-      const pathname = ROUTES_PATH['Bills']
+    test('Then it should render Bills page', async () => {
+      const pathname = ROUTES_PATH['Bills'];
       const html = ROUTES({
         pathname,
         data,
         loading,
         error
-       })
-       document.body.innerHTML = html
-       expect(screen.getAllByText('Mes notes de frais')).toBeTruthy()
-    })
-  })
+      });
+      await waitFor(() =>
+        expect(screen.getByText('Mes notes de frais')).toBeInTheDocument()
+      );
+    });
+  });
   describe('When I navigate to NewBill page', () => {
     test(('Then, it should render NewBill page'), () => {
       const pathname = ROUTES_PATH['NewBill']

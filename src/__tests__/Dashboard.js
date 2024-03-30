@@ -1,9 +1,7 @@
-/**
- * @jest-environment jsdom
- */
+import React from 'react'; // Assurez-vous d'importer React dans vos fichiers de test
 
-import {fireEvent, screen, waitFor} from "@testing-library/dom"
-import userEvent from '@testing-library/user-event'
+import { fireEvent, screen, waitFor } from '@testing-library/dom';
+import userEvent from '@testing-library/user-event';
 import DashboardFormUI from "../views/DashboardFormUI.js"
 import DashboardUI from "../views/DashboardUI.js"
 import Dashboard, { filteredBills, cards } from "../containers/Dashboard.js"
@@ -40,7 +38,7 @@ describe('Given I am connected as an Admin', () => {
       expect(screen.getAllByText('Loading...')).toBeTruthy()
     })
   })
-  describe('When I am on Dashboard page but back-end send an error message', () => {
+  describe('When I am on Dashboard page but back-end sends an error message', () => {
     test('Then, Error page should be rendered', () => {
       document.body.innerHTML = DashboardUI({ error: 'some error message' })
       expect(screen.getAllByText('Erreur')).toBeTruthy()
@@ -49,7 +47,6 @@ describe('Given I am connected as an Admin', () => {
 
   describe('When I am on Dashboard page and I click on arrow', () => {
     test('Then, tickets list should be unfolding, and cards should appear', async () => {
-
       const onNavigate = (pathname) => {
         document.body.innerHTML = ROUTES({ pathname })
       }
@@ -60,7 +57,7 @@ describe('Given I am connected as an Admin', () => {
       }))
 
       const dashboard = new Dashboard({
-        document, onNavigate, store: null, bills:bills, localStorage: window.localStorage
+        document, onNavigate, store: null, bills: bills, localStorage: window.localStorage
       })
       document.body.innerHTML = DashboardUI({ data: { bills } })
 
@@ -75,25 +72,27 @@ describe('Given I am connected as an Admin', () => {
       icon1.addEventListener('click', handleShowTickets1)
       userEvent.click(icon1)
       expect(handleShowTickets1).toHaveBeenCalled()
-      await waitFor(() => screen.getByTestId(`open-bill47qAXb6fIm2zOKkLzMro`) )
+
+      // Attendre le rendu des éléments après chaque clic sur l'icône d'arrow
+      await waitFor(() => screen.getByTestId(`open-bill47qAXb6fIm2zOKkLzMro`))
       expect(screen.getByTestId(`open-bill47qAXb6fIm2zOKkLzMro`)).toBeTruthy()
+
       icon2.addEventListener('click', handleShowTickets2)
       userEvent.click(icon2)
       expect(handleShowTickets2).toHaveBeenCalled()
-      await waitFor(() => screen.getByTestId(`open-billUIUZtnPQvnbFnB0ozvJh`) )
+      await waitFor(() => screen.getByTestId(`open-billUIUZtnPQvnbFnB0ozvJh`))
       expect(screen.getByTestId(`open-billUIUZtnPQvnbFnB0ozvJh`)).toBeTruthy()
 
       icon3.addEventListener('click', handleShowTickets3)
       userEvent.click(icon3)
       expect(handleShowTickets3).toHaveBeenCalled()
-      await waitFor(() => screen.getByTestId(`open-billBeKy5Mo4jkmdfPGYpTxZ`) )
+      await waitFor(() => screen.getByTestId(`open-billBeKy5Mo4jkmdfPGYpTxZ`))
       expect(screen.getByTestId(`open-billBeKy5Mo4jkmdfPGYpTxZ`)).toBeTruthy()
     })
   })
 
   describe('When I am on Dashboard page and I click on edit icon of a card', () => {
-    test('Then, right form should be filled',  () => {
-
+    test('Then, right form should be filled', () => {
       const onNavigate = (pathname) => {
         document.body.innerHTML = ROUTES({ pathname })
       }
@@ -104,7 +103,7 @@ describe('Given I am connected as an Admin', () => {
       }))
 
       const dashboard = new Dashboard({
-        document, onNavigate, store: null, bills:bills, localStorage: window.localStorage
+        document, onNavigate, store: null, bills: bills, localStorage: window.localStorage
       })
       document.body.innerHTML = DashboardUI({ data: { bills } })
       const handleShowTickets1 = jest.fn((e) => dashboard.handleShowTickets(e, bills, 1))
@@ -120,8 +119,7 @@ describe('Given I am connected as an Admin', () => {
   })
 
   describe('When I am on Dashboard page and I click 2 times on edit icon of a card', () => {
-    test('Then, big bill Icon should Appear',  () => {
-
+    test('Then, big bill Icon should Appear', () => {
       const onNavigate = (pathname) => {
         document.body.innerHTML = ROUTES({ pathname })
       }
@@ -132,7 +130,7 @@ describe('Given I am connected as an Admin', () => {
       }))
 
       const dashboard = new Dashboard({
-        document, onNavigate, store: null, bills:bills, localStorage: window.localStorage
+        document, onNavigate, store: null, bills: bills, localStorage: window.localStorage
       })
       document.body.innerHTML = DashboardUI({ data: { bills } })
 
@@ -141,6 +139,7 @@ describe('Given I am connected as an Admin', () => {
       icon1.addEventListener('click', handleShowTickets1)
       userEvent.click(icon1)
       expect(handleShowTickets1).toHaveBeenCalled()
+     
       expect(screen.getByTestId(`open-bill47qAXb6fIm2zOKkLzMro`)).toBeTruthy()
       const iconEdit = screen.getByTestId('open-bill47qAXb6fIm2zOKkLzMro')
       userEvent.click(iconEdit)
@@ -149,7 +148,6 @@ describe('Given I am connected as an Admin', () => {
       expect(bigBilledIcon).toBeTruthy()
     })
   })
-
 
   describe('When I am on Dashboard and there are no bills', () => {
     test('Then, no cards should be shown', () => {
@@ -257,6 +255,7 @@ describe("Given I am a user connected as Admin", () => {
       expect(contentRefused).toBeTruthy()
       expect(screen.getByTestId("big-billed-icon")).toBeTruthy()
     })
+  })
   describe("When an error occurs on API", () => {
     beforeEach(() => {
       jest.spyOn(mockStore, "bills")
@@ -305,5 +304,4 @@ describe("Given I am a user connected as Admin", () => {
   })
 
   })
-})
 
