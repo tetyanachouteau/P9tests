@@ -12,16 +12,15 @@ export const ROUTES_PATH = {
 
 export const ROUTES = ({ pathname, data, error, loading }) => {
   switch (pathname) {
-    case ROUTES_PATH['Login']:
+    case ROUTES_PATH.Login:
       return LoginUI({ data, error, loading })
-    case ROUTES_PATH['Bills']:
+    case ROUTES_PATH.Bills:
       return BillsUI({ data, error, loading })
-    case ROUTES_PATH['NewBill']:
+    case ROUTES_PATH.NewBill:
       return NewBillUI()
-    case ROUTES_PATH['Dashboard']:
+    case ROUTES_PATH.Dashboard:
       return DashboardUI({ data, error, loading })
     default:
       return LoginUI({ data, error, loading })
   }
 }
-

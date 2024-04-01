@@ -5,7 +5,6 @@ import { bills } from "../fixtures/bills.js";
 import { ROUTES_PATH } from "../constants/routes.js";
 import { localStorageMock } from "../__mocks__/localStorage.js";
 import router from "../app/Router.js";
-import jsdom from "jest-environment-jsdom";
 
 beforeAll(() => {
   Object.defineProperty(window, 'localStorage', { value: localStorageMock });
@@ -35,13 +34,11 @@ describe("Given I am connected as an employee", () => {
   });
 
   test("Check if icon window is rendered", () => {
-    render(<BillsUI data={bills} loading={false} error={null} />);
     const iconWindow = screen.getByTestId('icon-window');
     expect(iconWindow).toBeInTheDocument();
   });
 
   test("Check if dates have correct format", () => {
-    render(<BillsUI data={bills} loading={false} error={null} />);
     const dateElements = screen.getAllByText(/\d{4}-\d{2}-\d{2}/); // Format YYYY-MM-DD
     dateElements.forEach((dateElement) => {
       expect(dateElement).toBeInTheDocument();

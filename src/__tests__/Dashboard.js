@@ -15,7 +15,7 @@ import {
   localStorageMock
 } from "../__mocks__/localStorage.js";
 import mockStore from "../__mocks__/store";
-import router from "../app/Router";
+import router from "../app/Router.js";
 import {
   filteredBills
 } from '../containers/Dashboard.js';

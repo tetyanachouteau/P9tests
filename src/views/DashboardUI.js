@@ -1,6 +1,4 @@
 
-import React from 'react';
-import jsdom from "jest-environment-jsdom";
 import VerticalLayout from './VerticalLayout.js'
 import ErrorPage from "./ErrorPage.js"
 import LoadingPage from "./LoadingPage.js"
