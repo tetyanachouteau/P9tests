@@ -1,7 +1,5 @@
-import jsdom from "jest-environment-jsdom";
-
 import React from "react";
-import { screen } from "@testing-library/dom"
+import { fireEvent, screen, waitFor } from "@testing-library/react"
 import Logout from "../containers/Logout.js"
 import '@testing-library/jest-dom/extend-expect'
 import { localStorageMock } from "../__mocks__/localStorage.js"

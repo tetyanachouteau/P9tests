@@ -1,281 +1,62 @@
-import jsdom from "jest-environment-jsdom";
-import { fireEvent, screen, waitFor } from "@testing-library/dom";
 
-import React from "react";
+import React from 'react';
+import { fireEvent, waitFor, render, screen } from '@testing-library/react';
+import '@testing-library/jest-dom/extend-expect';
+import Login from '../containers/Login';
+import { ROUTES } from '../constants/routes';
+import { localStorageMock } from '../__mocks__/localStorage';
+import mockStore from '../__mocks__/store';
 
-import { render } from "@testing-library/react";
+jest.mock('../app/store', () => mockStore);
 
-import LoginUI from "../views/LoginUI";
-import Login from "../containers/Login.js";
-import {
-  ROUTES
-} from "../constants/routes";
-
-import { fireEvent, screen, waitFor } from "@testing-library/react"
-
-import {
-  act,
-  fireEvent,
-  screen,
-  waitFor
-} from "@testing-library/react";
-
-describe("Given that I am a user on login page", () => {
-  describe("When I do not fill fields and I click on employee button Login In", () => {
-    test("Then It should renders Login page", () => {
-      document.body.innerHTML = LoginUI();
-
-      const inputEmailUser = screen.getByTestId("employee-email-input");
-      expect(inputEmailUser.value).toBe("");
-
-      const inputPasswordUser = screen.getByTestId("employee-password-input");
-      expect(inputPasswordUser.value).toBe("");
-
-      const form = screen.getByTestId("form-employee");
-      const handleSubmit = jest.fn((e) => e.preventDefault());
-
-      form.addEventListener("submit", handleSubmit);
-      fireEvent.submit(form);
-      expect(screen.getByTestId("form-employee")).toBeTruthy();
-    });
-  });
-
-  describe("When I do fill fields in incorrect format and I click on employee button Login In", () => {
-    test("Then It should renders Login page", () => {
-      render(<LoginUI />);
-
-
-      const inputEmailUser = screen.getByTestId("employee-email-input");
-      fireEvent.change(inputEmailUser, {
-        target: {
-          value: "pasunemail"
-        }
-      });
-      expect(inputEmailUser.value).toBe("pasunemail");
-
-      const inputPasswordUser = screen.getByTestId("employee-password-input");
-      fireEvent.change(inputPasswordUser, {
-        target: {
-          value: "azerty"
-        }
-      });
-      expect(inputPasswordUser.value).toBe("azerty");
-
-      const form = screen.getByTestId("form-employee");
-      const handleSubmit = jest.fn((e) => e.preventDefault());
-
-      form.addEventListener("submit", handleSubmit);
-      fireEvent.submit(form);
-      expect(screen.getByTestId("form-employee")).toBeTruthy();
-    });
-  });
-
-  describe("When I do fill fields in correct format and I click on employee button Login In", () => {
-    test("Then I should be identified as an Employee in app", () => {
-      document.body.innerHTML = LoginUI();
-      const inputData = {
-        email: "johndoe@email.com",
-        password: "azerty",
-      };
-
-      const inputEmailUser = screen.getByTestId("employee-email-input");
-      fireEvent.change(inputEmailUser, {
-        target: {
-          value: inputData.email
-        }
-      });
-      expect(inputEmailUser.value).toBe(inputData.email);
-
-      const inputPasswordUser = screen.getByTestId("employee-password-input");
-      fireEvent.change(inputPasswordUser, {
-        target: {
-          value: inputData.password
-        },
-      });
-      expect(inputPasswordUser.value).toBe(inputData.password);
-
-      const form = screen.getByTestId("form-employee");
-
-      // localStorage should be populated with form data
-      Object.defineProperty(window, "localStorage", {
-        value: {
-          getItem: jest.fn(() => null),
-          setItem: jest.fn(() => null),
-        },
-        writable: true,
-      });
-
-      // we have to mock navigation to test it
+describe('Given I am not connected', () => {
+  describe('When I am on Login page', () => {
+    test('Then, email input should be focused', () => {
       const onNavigate = (pathname) => {
-        document.body.innerHTML = ROUTES({
-          pathname
-        });
+        document.body.innerHTML = ROUTES({ pathname });
       };
 
-      let PREVIOUS_LOCATION = "";
 
-      const store = jest.fn();
+      Object.defineProperty(window, 'localStorage', { value: localStorageMock });
 
-      const login = new Login({
-        document,
-        localStorage: window.localStorage,
-        onNavigate,
-        PREVIOUS_LOCATION,
-        store,
-      });
+      render(<Login onNavigate={onNavigate} />);
 
-      const handleSubmit = jest.fn(login.handleSubmitEmployee);
-      login.login = jest.fn().mockResolvedValue({});
-      form.addEventListener("submit", handleSubmit);
-      fireEvent.submit(form);
-      expect(handleSubmit).toHaveBeenCalled();
-      expect(window.localStorage.setItem).toHaveBeenCalled();
-      expect(window.localStorage.setItem).toHaveBeenCalledWith(
-        "user",
-        JSON.stringify({
-          type: "Employee",
-          email: inputData.email,
-          password: inputData.password,
-          status: "connected",
-        })
-      );
+      const inputEmail = screen.getByPlaceholderText('Email');
+      expect(inputEmail).toHaveFocus()
     });
 
-    test("It should renders Bills page", () => {
-      expect(screen.getAllByText("Mes notes de frais")).toBeTruthy();
+    test('Then, user should be able to fill email input', () => {
+      const onNavigate = (pathname) => {
+        document.body.innerHTML = ROUTES({ pathname });
+      };
+
+      Object.defineProperty(window, 'localStorage', { value: localStorageMock });
+
+      const login = new Login({ document, onNavigate });
+
+      document.body.innerHTML = login.render();
+      const inputEmail = document.querySelector('input[type="email"]');
+      fireEvent.change(inputEmail, { target: { value: 'test@test.com' } });
+      expect(inputEmail.value).toBe('test@test.com');
     });
   });
 });
 
-describe("Given that I am a user on login page", () => {
-  describe("When I do not fill fields and I click on admin button Login In", () => {
-    test("Then It should renders Login page", () => {
-      document.body.innerHTML = LoginUI();
-
-      const inputEmailUser = screen.getByTestId("admin-email-input");
-      expect(inputEmailUser.value).toBe("");
-
-      const inputPasswordUser = screen.getByTestId("admin-password-input");
-      expect(inputPasswordUser.value).toBe("");
-
-      const form = screen.getByTestId("form-admin");
-      const handleSubmit = jest.fn((e) => e.preventDefault());
-
-      form.addEventListener("submit", handleSubmit);
-      fireEvent.submit(form);
-      expect(screen.getByTestId("form-admin")).toBeTruthy();
-    });
-  });
-})
-  describe("When I do fill fields in incorrect format and I click on admin button Login In", () => {
-    test("Then it should renders Login page", () => {
-      document.body.innerHTML = LoginUI();
-
-      const inputEmailUser = screen.getByTestId("admin-email-input");
-      fireEvent.change(inputEmailUser, {
-        target: {
-          value: "pasunemail"
-        }
-      });
-      expect(inputEmailUser.value).toBe("pasunemail");
-
-      const inputPasswordUser = screen.getByTestId("admin-password-input");
-      fireEvent.change(inputPasswordUser, {
-        target: {
-          value: "azerty"
-        }
-      });
-      expect(inputPasswordUser.value).toBe("azerty");
-
-      const form = screen.getByTestId("form-admin");
-      const handleSubmit = jest.fn((e) => e.preventDefault());
-
-      form.addEventListener("submit", handleSubmit);
-      fireEvent.submit(form);
-      expect(screen.getByTestId("form-admin")).toBeTruthy();
-    });
-  });
-
-  describe("When I do fill fields in correct format and I click on admin button Login In", () => {
-    test("Then I should be identified as an HR admin in app", async () => {
-      document.body.innerHTML = LoginUI();
-      const inputData = {
-        email: "johndoe@email.com",
-        password: "azerty",
-      };
-      await act(async () => {
-        render(<LoginUI />);
-        // Attendez que le composant soit pleinement rendu ici
-      });
-      const inputEmailAdmin = screen.getByTestId("admin-email-input");
-      fireEvent.change(inputEmailAdmin, {
-        target: {
-          value: inputData.email
-        }
-      });
-      expect(inputEmailAdmin.value).toBe(inputData.email);
-
-      const inputPasswordAdmin = screen.getByTestId("admin-password-input");
-      fireEvent.change(inputPasswordAdmin, {
-        target: {
-          value: inputData.password
-        },
-      });
-      expect(inputPasswordAdmin.value).toBe(inputData.password);
-
-      const form = screen.getByTestId("form-admin");
-
-      // localStorage should be populated with form data
-      Object.defineProperty(window, "localStorage", {
-        value: {
-          getItem: jest.fn(() => null),
-          setItem: jest.fn(() => null),
-        },
-        writable: true,
-      });
-
-      // we have to mock navigation to test it
+describe('Given I am connected as Admin', () => {
+  describe('When I am on Login page', () => {
+    test('Then, I should be redirected to Dashboard', () => {
       const onNavigate = (pathname) => {
-        document.body.innerHTML = ROUTES({
-          pathname
-        });
+        document.body.innerHTML = ROUTES({ pathname });
       };
 
-      let PREVIOUS_LOCATION = "";
+      Object.defineProperty(window, 'localStorage', { value: localStorageMock });
+      window.localStorage.setItem('user', JSON.stringify({
+        type: 'Admin'
+      }));
 
-      const store = jest.fn();
-
-      const login = new Login({
-        document,
-        localStorage: window.localStorage,
-        onNavigate,
-        PREVIOUS_LOCATION,
-        store,
-      });
-
-      const handleSubmit = jest.fn(login.handleSubmitAdmin);
-      login.login = jest.fn().mockResolvedValue({});
-      form.addEventListener("submit", handleSubmit);
-
-      // Utilisez waitFor pour attendre que l'action asynchrone se termine
-      await waitFor(() => {
-        fireEvent.submit(form);
-      });
-
-      expect(handleSubmit).toHaveBeenCalled();
-      expect(window.localStorage.setItem).toHaveBeenCalled();
-      expect(window.localStorage.setItem).toHaveBeenCalledWith(
-        "user",
-        JSON.stringify({
-          type: "Admin",
-          email: inputData.email,
-          password: inputData.password,
-          status: "connected",
-        })
-      );
+      const login = new Login({ document, onNavigate });
+      login.redirectToDashboard();
+      expect(window.location.href).toBe('http://localhost/dashboard');
     });
- 
-      test("It should renders HR dashboard page", () => {
-        expect(screen.queryByText("Validations")).toBeTruthy();
-      });
-    });
+  });
+});

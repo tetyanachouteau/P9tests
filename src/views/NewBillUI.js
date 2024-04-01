@@ -1,5 +1,10 @@
 import VerticalLayout from './VerticalLayout.js'
 
+import React from 'react';
+import { fireEvent, waitFor } from '@testing-library/react';
+import '@testing-library/jest-dom/extend-expect';
+
+
 export default () => {
 
   return (`

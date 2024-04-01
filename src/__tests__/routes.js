@@ -1,8 +1,5 @@
-import React from 'react';
-import jsdom from "jest-environment-jsdom";
-
 import { ROUTES, ROUTES_PATH } from "../constants/routes"
-import { screen } from "@testing-library/dom"
+import { screen, waitFor } from '@testing-library/dom';
 
 const data = []
 const loading = false
@@ -18,10 +15,13 @@ describe('Given I am connected and I am on some page of the app', () => {
         loading,
         error
        })
-       document.body.innerHTML = html
-       expect(screen.getAllByText('Administration')).toBeTruthy()
+       document.body.innerHTML = html;
+       expect(screen.queryByText((content, element) => {
+         return element.tagName.toLowerCase() === 'a' && content.includes('Administration');
+       })).toBeInTheDocument();
     })
   })
+
   describe('When I navigate to Bills page', () => {
     test('Then it should render Bills page', async () => {
       const pathname = ROUTES_PATH['Bills'];
